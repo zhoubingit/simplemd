@@ -1,5 +1,7 @@
 # simplemd
 
+[English](./README-en.md) | [中文](./README.md)
+
 simplemd 是一个基于 Tauri、React 和 CodeMirror 的本地 Markdown 编辑器，面向 Windows 桌面使用。
 
 ## 功能
