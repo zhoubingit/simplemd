@@ -1,7 +1,7 @@
 {
   "name": "simplemd",
   "version": "1.0.0",
-  "description": "个人自用的 Markdown 所见即所得编辑器项目。",
+  "description": "面向 Windows 用户的本地 Markdown 编辑器",
   "directories": {
     "doc": "docs"
   },
