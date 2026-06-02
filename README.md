@@ -48,3 +48,7 @@ simplemd_1.0.0_x64-setup.exe
 ```
 
 安装完成后可通过桌面快捷方式或开始菜单启动，Windows 任务管理器中的进程名为 `simplemd.exe`。
+
+## License
+
+本项目基于 [ISC License](./LICENSE) 许可开源。

@@ -48,3 +48,7 @@ simplemd_1.0.0_x64-setup.exe
 ```
 
 After installation, it can be launched via the desktop shortcut or Start menu. The process name in Windows Task Manager is `simplemd.exe`.
+
+## License
+
+This project is licensed under the [ISC License](./LICENSE).
