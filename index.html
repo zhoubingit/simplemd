@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>simplemd</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family:
+          "Segoe UI",
+          "PingFang SC",
+          "Microsoft YaHei",
+          sans-serif;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #f4f5f7;
+      }
+
+      #startup-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483647;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        color: #24272f;
+        background:
+          linear-gradient(180deg, #fbfbfc 0%, #eef1f5 100%);
+        opacity: 1;
+        transition:
+          opacity 220ms ease,
+          visibility 220ms ease;
+      }
+
+      #startup-screen[data-ready="true"] {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .startup-panel {
+        width: min(360px, calc(100vw - 64px));
+        display: grid;
+        gap: 16px;
+      }
+
+      .startup-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .startup-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background:
+          linear-gradient(135deg, #2f6df6 0%, #43a047 100%);
+        box-shadow: 0 10px 30px rgb(47 109 246 / 22%);
+      }
+
+      .startup-title {
+        display: grid;
+        gap: 2px;
+      }
+
+      .startup-name {
+        font-size: 15px;
+        line-height: 1.2;
+        font-weight: 700;
+      }
+
+      .startup-status {
+        font-size: 12px;
+        line-height: 1.2;
+        color: #6f7683;
+      }
+
+      .startup-progress {
+        position: relative;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #d9dee7;
+      }
+
+      .startup-progress::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 42%;
+        border-radius: inherit;
+        background:
+          linear-gradient(90deg, #2f6df6 0%, #43a047 100%);
+        animation: startup-progress 1.15s ease-in-out infinite;
+      }
+
+      @keyframes startup-progress {
+        0% {
+          transform: translateX(-105%);
+        }
+
+        55% {
+          transform: translateX(92%);
+        }
+
+        100% {
+          transform: translateX(245%);
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html,
+        body {
+          background: #17191f;
+        }
+
+        #startup-screen {
+          color: #f4f6fb;
+          background:
+            linear-gradient(180deg, #22252d 0%, #15181f 100%);
+        }
+
+        .startup-status {
+          color: #a1a8b5;
+        }
+
+        .startup-progress {
+          background: #343946;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="startup-screen" aria-live="polite">
+      <div class="startup-panel">
+        <div class="startup-brand">
+          <div class="startup-mark" aria-hidden="true"></div>
+          <div class="startup-title">
+            <div class="startup-name">simplemd</div>
+            <div class="startup-status">正在启动编辑器</div>
+          </div>
+        </div>
+        <div class="startup-progress" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

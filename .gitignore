@@ -1,0 +1,12 @@
+node_modules/
+dist/
+target/
+src-tauri/target/
+release/
+*.log
+
+# Local planning / execution notes
+task_plan.md
+progress.md
+findings.md
+docs/implementation-plan.md
