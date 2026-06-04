@@ -1677,81 +1677,121 @@ body {
 }
 
 .menu-text-button {
+  /* 1) 基础容器与排版优化：提升高度与字号，创造呼吸感
+     - 将 min-height 提升至 34px，带来更舒展的视觉纵深与更佳的物理点击域。
+     - 字号提升至 13px，字重调整为更温润的 520，在各种操作系统上都能呈现出极佳的渲染细节。
+     - 增加左右 padding 至 12px，让文字四周拥有合理的留白，避免视觉拥挤。
+     - 使用 cubic-bezier(0.16, 1, 0.3, 1) 平滑的 OutExpo 缓动曲线，让交互拥有物理阻尼感。
+  */
   position: relative;
   min-width: auto;
-  min-height: 30px;
+  min-height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: 0 10px;
+  padding: 0 12px;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   background: transparent;
   box-shadow: none;
-  color: color-mix(in srgb, var(--text-secondary) 86%, var(--text-primary));
-  font-size: 12px;
-  font-weight: 560;
+  color: color-mix(in srgb, var(--text-secondary) 82%, var(--text-primary));
+  font-size: 13px;
+  font-weight: 520;
   line-height: 1;
-  letter-spacing: 0;
+  letter-spacing: -0.01em;
   white-space: nowrap;
   transition:
-    background-color 140ms ease,
-    color 140ms ease,
-    opacity 140ms ease;
+    background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(0px);
 }
 
 .menu-text-button-label {
+  /* 1) 确保文字内容在上层高亮显示，与伪元素背景完美叠加 */
   position: relative;
   z-index: 1;
 }
 
 .menu-text-button::before {
+  /* 1) 激活指示器优化：从死板的下划线重构为精致居中的“胶囊呼吸线”
+     - 指示线不再生硬地横跨整个按钮宽度，而是缩短为 14px 的精致胶囊。
+     - 居中定位，在未激活时以极低缩放比 scaleX(0.2) 与不透明度 0 隐藏。
+     - 配合平滑缓动曲线，使其激活时如同物理指示灯一样温润地向两侧舒展。
+  */
   content: "";
   position: absolute;
-  left: 9px;
-  right: 9px;
-  bottom: 3px;
-  height: 2px;
+  left: 50%;
+  bottom: 5px;
+  width: 14px;
+  height: 3px;
   border-radius: 999px;
-  background: currentColor;
+  background: var(--accent-strong);
   opacity: 0;
-  transform: scaleX(0.45);
+  transform: translateX(-50%) scaleX(0.2);
+  transform-origin: center;
   transition:
-    opacity 140ms ease,
-    transform 140ms ease;
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .menu-text-button:hover {
+  /* 1) 悬浮状态 (Hover) 优化：半透明磨砂玻璃与微弱外发光
+     - 采用 color-mix 混合文字色与透明度，在浅色与深色主题下皆能自适应。
+     - 引入 backdrop-filter 提供 8px 的模糊，配合低饱和度背景，展现经典的 Glassmorphism 质感。
+     - 运用极细微的 box-shadow，一是模拟极细的物理光影边界，二是在悬浮时提供极其微弱的下沉阴影。
+  */
   transform: none;
   border-color: transparent;
   background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  backdrop-filter: blur(8px);
   color: var(--text-primary);
-  box-shadow: none;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--text-primary) 4%, transparent),
+    0 2px 8px -2px color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .menu-text-button.toolbar-button-active {
+  /* 1) 激活状态 (Active) 优化：主题色呼吸感背景与微弱背光
+     - 采用柔和的半透明主题色作为背景。
+     - 通过 box-shadow 增加极其微弱的物理外发光与内发光边框，使按钮具有悬浮于表面的层级感。
+  */
   border-color: transparent;
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent-strong);
-  box-shadow: none;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent),
+    0 4px 12px -2px color-mix(in srgb, var(--accent) 15%, transparent);
 }
 
 .menu-text-button.toolbar-button-active::before {
-  opacity: 0.62;
-  transform: scaleX(1);
+  /* 1) 激活指示器的触发状态：优雅展开
+     - 当处于激活状态时，指示线优雅地还原到原有宽度，并且不透明度提升至 0.9。
+  */
+  opacity: 0.9;
+  transform: translateX(-50%) scaleX(1);
 }
 
 .menu-text-button:focus-visible {
+  /* 1) 焦点状态 (Focus-visible) 优化：符合 macOS 的纯净聚焦环
+     - 略微拉大外边距偏移量 (3px)，以更好地契合圆角边缘，保持焦点状态的高对比度与整洁。
+  */
   outline: 2px solid color-mix(in srgb, var(--accent) 58%, transparent);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .menu-bar-desktop .menu-text-button {
-  min-height: 30px;
-  padding: 0 9px;
-  border-radius: 6px;
-  font-size: 12px;
+  /* 1) 桌面端布局统一适配
+     - 在桌面端同样统一保持 34px 的高度与 13px 的字号比例，确立统一的交互美感。
+  */
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
 .menu-recent-list {
