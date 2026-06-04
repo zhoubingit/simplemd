@@ -186,11 +186,21 @@ export function buildExportHtmlDocument(title: string, bodyHtml: string) {
         border-radius: 12px;
       }
       pre {
+        /* 1) 优化导出 HTML 中的代码块外边距、内边距、圆角与溢出 */
+        margin: 0 0 18px;
+        padding: 16px 20px;
+        border-radius: 12px;
         overflow: auto;
-        border-radius: 14px;
+        /* 2) 为导出的代码块设定暗色背景与微透边框，维持与编辑器一致的极简质感 */
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        /* 3) 优化字号与行高表现 */
+        font-size: 14px;
+        line-height: 1.6;
       }
       code {
-        font-family: "Cascadia Code", "Consolas", monospace;
+        /* 1) 设定导出 HTML 代码的等宽字体族 */
+        font-family: "Cascadia Code", "Consolas", "Fira Code", monospace;
       }
       blockquote {
         margin-left: 0;

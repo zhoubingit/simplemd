@@ -2983,14 +2983,27 @@ body {
 }
 
 .markdown-body pre {
-  margin: 0 0 16px;
-  border-radius: 14px;
+  /* 1) 优化代码块容器的外边距、内边距、圆角与溢出滚动表现 */
+  margin: 0 0 18px;
+  padding: 16px 20px;
+  border-radius: 12px;
   overflow: auto;
+  /* 2) 设定代码块的边框和默认背景，以便在不同主题下呈现出色的呼吸感与分离度 */
+  border: 1px solid color-mix(in srgb, var(--border-soft) 50%, transparent);
+  background: var(--surface-3);
+  /* 3) 优化字号与行高以提升阅读体验 */
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .markdown-body pre code {
-  padding: 0;
-  background: transparent;
+  /* 1) 强制清除代码块内部 code 标签的默认边距与背景色 */
+  padding: 0 !important;
+  background: transparent !important;
+  /* 2) 统一设定代码字体族以保证跨平台等宽字体的优秀渲染 */
+  font-family: "Cascadia Code", "Consolas", "Fira Code", monospace;
+  font-size: inherit;
+  color: inherit;
 }
 
 .markdown-body img {
