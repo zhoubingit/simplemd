@@ -343,6 +343,78 @@ export const MarkdownEditor = forwardRef<MarkdownEditorHandle, MarkdownEditorPro
         };
       }
 
+      /* 1) 薰衣草 (lavender) 专属 CodeMirror 浅色温和紫色调 */
+      if (theme === "lavender") {
+        return {
+          background: "#f5f3ff",
+          text: "#252035",
+          caret: "#7c62cc",
+          gutter: "rgba(124, 98, 204, 0.3)",
+          activeLine: "rgba(124, 98, 204, 0.06)",
+          selection: "rgba(124, 98, 204, 0.18)",
+        };
+      }
+
+      /* 2) 德古拉 (dracula) 专属 CodeMirror 极客暗黑高对比 */
+      if (theme === "dracula") {
+        return {
+          background: "#282a36",
+          text: "#f8f8f2",
+          caret: "#ff79c6",
+          gutter: "rgba(189, 147, 249, 0.35)",
+          activeLine: "rgba(255, 255, 255, 0.05)",
+          selection: "rgba(189, 147, 249, 0.25)",
+        };
+      }
+
+      /* 3) 樱花 (sakura) 专属 CodeMirror 清新淡雅浅粉 */
+      if (theme === "sakura") {
+        return {
+          background: "#fff0f2",
+          text: "#4a2830",
+          caret: "#db6b83",
+          gutter: "rgba(219, 107, 131, 0.3)",
+          activeLine: "rgba(219, 107, 131, 0.06)",
+          selection: "rgba(219, 107, 131, 0.18)",
+        };
+      }
+
+      /* 4) 赛博朋克 (cyberpunk) 专属 CodeMirror 霓虹炫酷深紫 */
+      if (theme === "cyberpunk") {
+        return {
+          background: "#0d0a1a",
+          text: "#e0f7fc",
+          caret: "#ff007f",
+          gutter: "rgba(0, 240, 255, 0.3)",
+          activeLine: "rgba(255, 0, 127, 0.08)",
+          selection: "rgba(0, 240, 255, 0.25)",
+        };
+      }
+
+      /* 5) 北欧冰雪 (nord) 专属 CodeMirror 极简霜灰冰蓝 */
+      if (theme === "nord") {
+        return {
+          background: "#2e3440",
+          text: "#eceff4",
+          caret: "#88c0d0",
+          gutter: "rgba(136, 192, 208, 0.3)",
+          activeLine: "rgba(255, 255, 255, 0.04)",
+          selection: "rgba(136, 192, 208, 0.22)",
+        };
+      }
+
+      /* 6) 抹茶 (macha) 专属 CodeMirror 日式护眼治愈绿 */
+      if (theme === "macha") {
+        return {
+          background: "#f6f8f4",
+          text: "#2d3e24",
+          caret: "#5e824d",
+          gutter: "rgba(94, 130, 77, 0.3)",
+          activeLine: "rgba(94, 130, 77, 0.06)",
+          selection: "rgba(94, 130, 77, 0.18)",
+        };
+      }
+
       return {
         background: "#14171b",
         text: "#f5f1e8",

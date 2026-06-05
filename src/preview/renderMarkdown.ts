@@ -128,9 +128,18 @@ export async function renderMarkdown(markdownSource: string) {
       }
 
       const language = normalizeLanguage(token.info);
-      if (!language) {
-        fenceHtml.set(index, buildPlainFence(token.content, token.info));
-        return;
+      const langStr = language as string;
+      /* 1) 判断是否为纯文本类语言（如 text, txt, plaintext）或不被当前支持的高亮语言 */
+      const isPlain = !language ||
+          langStr === "text" ||
+          langStr === "txt" ||
+          langStr === "plaintext" ||
+          !commonLanguages.includes(language);
+
+      /* 2) 针对非高亮文本或不支持的高亮语言，直接渲染为普通的 fallback 文本框，以契合当前的应用主题配色 */
+      if (isPlain) {
+          fenceHtml.set(index, buildPlainFence(token.content, token.info));
+          return;
       }
 
       try {

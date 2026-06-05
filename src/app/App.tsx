@@ -3141,6 +3141,7 @@ export function App() {
                   </label>
                   <label className="preferences-item preferences-item-select">
                     <span>主题</span>
+                    {/* 1) 在设置界面中加入 Lavender、Dracula 和 Sakura 三款新主题的可选下拉项 */}
                     <select
                       value={preferences.theme}
                       onChange={(event) =>
@@ -3155,6 +3156,13 @@ export function App() {
                       <option value="ocean">Ocean</option>
                       <option value="dune">Dune</option>
                       <option value="ember">Ember</option>
+                      <option value="lavender">Lavender (薰衣草)</option>
+                      <option value="dracula">Dracula (德古拉)</option>
+                      <option value="sakura">Sakura (樱花)</option>
+                      {/* 1) 额外新增 Cyberpunk (赛博朋克)、Nord (冰雪北欧)、Macha (日式抹茶) 三款具有高级审美设计的主题 */}
+                      <option value="cyberpunk">Cyberpunk (赛博朋克)</option>
+                      <option value="nord">Nord (冰雪北欧)</option>
+                      <option value="macha">Macha (日式抹茶)</option>
                     </select>
                   </label>
                 </div>
