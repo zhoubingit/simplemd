@@ -3158,11 +3158,12 @@ body {
 }
 
 .markdown-body img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 0 0 16px;
-  border-radius: 14px;
+    /* 1) 图片设置为块级并在水平方向居中，圆角修饰 */
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 16px;
+    border-radius: 14px;
 }
 
 .markdown-body table {

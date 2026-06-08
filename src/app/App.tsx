@@ -3103,9 +3103,20 @@ export function App() {
       <div className="shell-backdrop shell-backdrop-right" />
 
       {isDesktopApp ? (
-        <div className="desktop-window-bar">
-          <div className="desktop-window-bar-shell">
-            <div className="desktop-window-bar-menu">{menuBarContent}</div>
+        <div
+          className="desktop-window-bar"
+          data-tauri-drag-region
+          onDoubleClick={() => {
+              void handleDesktopWindowToggleMaximize();
+          }}
+        >
+          <div className="desktop-window-bar-shell" data-tauri-drag-region>
+            <div
+              className="desktop-window-bar-menu"
+              onDoubleClick={(event) => event.stopPropagation()}
+            >
+              {menuBarContent}
+            </div>
             <div
               className="desktop-titlebar-info"
               data-tauri-drag-region
@@ -3144,7 +3155,10 @@ export function App() {
                 </span>
               </div>
             </div>
-            <div className="desktop-window-controls">
+            <div
+              className="desktop-window-controls"
+              onDoubleClick={(event) => event.stopPropagation()}
+            >
               <button
                 type="button"
                 className="desktop-window-control"
