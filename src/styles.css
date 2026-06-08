@@ -2958,43 +2958,7 @@ body {
   display: none;
 }
 
-.panel-header {
-  /* 1) 调整对齐和内边距，使编辑器和预览的顶部条显得更紧凑窄小 */
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  padding: 8px 16px;
-  border-bottom: 1px solid color-mix(in srgb, var(--border-soft) 56%, transparent);
-  color: var(--text-secondary);
-  background: color-mix(in srgb, var(--surface-1) 98%, transparent);
-}
 
-.panel-header span {
-  display: block;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.panel-subtitle {
-  /* 2) 减小外边距与字号，提升信息层级紧凑度 */
-  margin: 2px 0 0;
-  color: var(--text-dim);
-  font-size: 11px;
-}
-
-.panel-tag {
-  display: inline-flex;
-  align-items: center;
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  background: var(--accent-ghost);
-  color: var(--accent);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
 .panel + .panel {
   border-left: 1px solid color-mix(in srgb, var(--border-soft) 56%, transparent);
@@ -3417,4 +3381,86 @@ body {
   .editor-toolbar .format-toolbar-popout-trigger {
     width: 100%;
   }
+}
+
+/* 1) 全屏大图预览覆盖层 */
+.fullscreen-image-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+    animation: fadeInOverlay 0.25s ease-out;
+}
+
+/* 2) 居中图片承载容器，设置弹性居中 */
+.fullscreen-image-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 3) 支持平滑放大动效，自适应比例 */
+.fullscreen-image-overlay img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    cursor: zoom-out;
+    animation: scaleInImage 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 4) 关闭按钮样式调优 */
+.fullscreen-image-close {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.fullscreen-image-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleInImage {
+    from {
+        transform: scale(0.9) translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
 }

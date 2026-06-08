@@ -592,6 +592,7 @@ export function App() {
   const [scrollSource, setScrollSource] = useState<ScrollSource>(null);
   const [showPreferences, setShowPreferences] = useState(false);
   const [showRecentDocuments, setShowRecentDocuments] = useState(false);
+  const [fullscreenImageUrl, setFullscreenImageUrl] = useState<string | null>(null);
   const [renameSession, setRenameSession] = useState<RenameDialogState | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [pendingExternalLink, setPendingExternalLink] = useState<string | null>(null);
@@ -3528,13 +3529,7 @@ export function App() {
               >
                 {showEditorPanel ? (
                   <article className="panel panel-editor">
-                    <header className="panel-header">
-                      <div>
-                        <span>编辑器</span>
-                        <p className="panel-subtitle">CodeMirror 6 · 主写作区</p>
-                      </div>
-                      <span className="panel-tag">Write</span>
-                    </header>
+                    {/* 1) 移除了原来的 panel-header 顶部栏 */}
                     <MarkdownEditor
                       key={activeTabId ?? "no-open-tab"}
                       ref={editorRef}
@@ -3556,14 +3551,18 @@ export function App() {
                 ) : null}
 
                 {showPreviewPanel ? (
-                  <article className="panel panel-preview">
-                    <header className="panel-header">
-                      <div>
-                        <span>预览</span>
-                        <p className="panel-subtitle">markdown-it + shiki · 双向滚动同步</p>
-                      </div>
-                      <span className="panel-tag">Render</span>
-                    </header>
+                  <article
+                    className="panel panel-preview"
+                    /* 2) 使用事件委托监听对图片的点击，从而触发全屏预览 */
+                    onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (target.tagName === "IMG") {
+                            const img = target as HTMLImageElement;
+                            setFullscreenImageUrl(img.src);
+                        }
+                    }}
+                  >
+                    {/* 3) 移除了原来的 panel-header 顶部栏 */}
                     <MarkdownPreview
                       markdown={markdown}
                       scrollRatio={scrollRatio}
@@ -3784,6 +3783,24 @@ export function App() {
           </section>
         </div>
       ) : null}
+
+      {/* 4) 全屏大图预览的覆盖层 */}
+      {fullscreenImageUrl && (
+        <div
+          className="fullscreen-image-overlay"
+          onClick={() => setFullscreenImageUrl(null)}
+        >
+          <div className="fullscreen-image-container">
+            <img src={fullscreenImageUrl} alt="Full screen preview" />
+            <button
+              className="fullscreen-image-close"
+              onClick={() => setFullscreenImageUrl(null)}
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
