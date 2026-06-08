@@ -2,9 +2,53 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::sync::Mutex;
+use notify::{Watcher, RecommendedWatcher, RecursiveMode};
 
 use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
+
+pub struct FileWatcher {
+    pub watcher: RecommendedWatcher,
+}
+
+pub struct FileWatcherState(pub Mutex<Option<FileWatcher>>);
+
+#[tauri::command]
+pub fn watch_file(
+    state: tauri::State<'_, FileWatcherState>,
+    path: String,
+) -> Result<(), String> {
+    // 1) 锁住 Watcher 状态
+    let mut state_guard = state.0.lock().unwrap();
+    if let Some(fw) = state_guard.as_mut() {
+        let p = std::path::Path::new(&path);
+        if p.exists() {
+            // 2) 开始监听非递归路径
+            fw.watcher
+                .watch(p, RecursiveMode::NonRecursive)
+                .map_err(|e| e.to_string())?;
+        } else {
+            return Err(format!("文件不存在: {}", path));
+        }
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn unwatch_file(
+    state: tauri::State<'_, FileWatcherState>,
+    path: String,
+) -> Result<(), String> {
+    // 1) 锁住 Watcher 状态
+    let mut state_guard = state.0.lock().unwrap();
+    if let Some(fw) = state_guard.as_mut() {
+        let p = std::path::Path::new(&path);
+        // 2) 停止监听路径（忽略它没被监听的错误）
+        let _ = fw.watcher.unwatch(p);
+    }
+    Ok(())
+}
 
 #[derive(Serialize)]
 pub struct DocumentHandle {

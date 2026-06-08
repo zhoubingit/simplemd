@@ -2959,11 +2959,12 @@ body {
 }
 
 .panel-header {
+  /* 1) 调整对齐和内边距，使编辑器和预览的顶部条显得更紧凑窄小 */
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: flex-start;
-  padding: 14px 18px;
+  align-items: center;
+  padding: 8px 16px;
   border-bottom: 1px solid color-mix(in srgb, var(--border-soft) 56%, transparent);
   color: var(--text-secondary);
   background: color-mix(in srgb, var(--surface-1) 98%, transparent);
@@ -2976,9 +2977,10 @@ body {
 }
 
 .panel-subtitle {
-  margin: 4px 0 0;
+  /* 2) 减小外边距与字号，提升信息层级紧凑度 */
+  margin: 2px 0 0;
   color: var(--text-dim);
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .panel-tag {

@@ -11,6 +11,7 @@ import {
 } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { listen } from "@tauri-apps/api/event";
 import {
   getCurrentWebview,
   type DragDropEvent,
@@ -36,6 +37,9 @@ import {
   readMarkdownFolder,
   saveDocument,
   saveDocumentAs,
+  watchFile,
+  unwatchFile,
+  lastSaveTimestamps,
   type DocumentHandle,
   type InstalledBrowserOption,
   type MarkdownFolderHandle,
@@ -674,6 +678,138 @@ export function App() {
       ? "尚未保存到本地"
       : "尚未打开文件";
   const desktopStatusSummary = statusText.trim();
+
+    const openTabsRef = useRef(openTabs);
+    const currentPathRef = useRef(currentPath);
+
+    useEffect(() => {
+        openTabsRef.current = openTabs;
+    }, [openTabs]);
+
+    useEffect(() => {
+        currentPathRef.current = currentPath;
+    }, [currentPath]);
+
+    // 1) 收集所有已打开的、拥有物理路径的文件
+    const openPaths = useMemo(() => {
+        return openTabs.map((tab) => tab.path).filter((p): p is string => !!p);
+    }, [openTabs]);
+
+    const watchedPathsRef = useRef<Set<string>>(new Set());
+
+    // 2) 同步监听列表到 Rust 后端
+    useEffect(() => {
+        if (!isTauri) return;
+
+        const currentPaths = new Set(openPaths);
+        const watched = watchedPathsRef.current;
+
+        // 2.1) 移除不再打开的文件监听
+        for (const p of watched) {
+            if (!currentPaths.has(p)) {
+                unwatchFile(p).catch((err) => {
+                    console.error("Failed to unwatch file:", p, err);
+                });
+                watched.delete(p);
+            }
+        }
+
+        // 2.2) 监听新打开的文件
+        for (const p of currentPaths) {
+            if (!watched.has(p)) {
+                watchFile(p).catch((err) => {
+                    console.error("Failed to watch file:", p, err);
+                });
+                watched.add(p);
+            }
+        }
+    }, [openPaths]);
+
+    // 3) 卸载时取消所有监听
+    useEffect(() => {
+        return () => {
+            if (!isTauri) return;
+            const watched = watchedPathsRef.current;
+            for (const p of watched) {
+                unwatchFile(p).catch((err) => {
+                    console.error("Failed to unwatch file on unmount:", p, err);
+                });
+            }
+            watched.clear();
+        };
+    }, []);
+
+    // 4) 重新加载被外部修改过的 Tab 内容
+    const reloadTabContent = (p: string, newContent: string) => {
+        setOpenTabs((prevTabs) =>
+            prevTabs.map((tab) => {
+                if (tab.path === p) {
+                    return {
+                        ...tab,
+                        markdown: newContent,
+                        lastSavedContent: newContent,
+                        saveState: "saved" as const,
+                    };
+                }
+                return tab;
+            })
+        );
+
+        if (currentPathRef.current === p) {
+            setMarkdown(newContent);
+            setLastSavedContent(newContent);
+            setSaveState("saved");
+        }
+    };
+
+    // 5) 监听后端的 file-changed 事件
+    useEffect(() => {
+        if (!isTauri) return;
+
+        const unlistenPromise = listen<string>("file-changed", async (event) => {
+            const changedPath = event.payload;
+
+            // 5.1) 忽略自己保存产生的事件 (2秒内)
+            const lastSave = lastSaveTimestamps[changedPath];
+            if (lastSave && Date.now() - lastSave < 2000) {
+                return;
+            }
+
+            const currentTabs = openTabsRef.current;
+            const targetTab = currentTabs.find((t) => t.path === changedPath);
+            if (!targetTab) return;
+
+            try {
+                // 5.2) 读取磁盘上的最新内容
+                const doc = await openDocumentByPath(changedPath);
+                if (doc.content === targetTab.markdown) {
+                    return;
+                }
+
+                const isDirty = targetTab.markdown !== targetTab.lastSavedContent;
+                if (isDirty) {
+                    // 5.3) 文件为 dirty 时，弹窗询问用户
+                    const fileName = getFileNameFromPath(changedPath);
+                    const shouldReload = window.confirm(
+                        `文件 "${fileName}" 在外部被修改。\n是否重新加载以载入外部修改？\n注意：这会覆盖您当前的未保存修改。`
+                    );
+                    if (shouldReload) {
+                        reloadTabContent(changedPath, doc.content);
+                    }
+                } else {
+                    // 5.4) 文件为 clean 时，直接自动刷新
+                    reloadTabContent(changedPath, doc.content);
+                }
+            } catch (err) {
+                console.error("Failed to reload externally changed file:", changedPath, err);
+            }
+        });
+
+        return () => {
+            unlistenPromise.then((unlisten) => unlisten());
+        };
+    }, []);
+
   const latestStateRef = useRef({
     markdown: initialMarkdown,
     currentPath: null as string | null,

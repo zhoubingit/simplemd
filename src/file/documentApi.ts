@@ -44,12 +44,22 @@ export async function readMarkdownFolder(path: string) {
   return invoke<MarkdownFolderHandle>("read_markdown_folder", { path });
 }
 
+export const lastSaveTimestamps: Record<string, number> = {};
+
 export async function createMarkdownFile(directoryPath: string) {
-  return invoke<DocumentHandle>("create_markdown_file", { directoryPath });
+  const result = await invoke<DocumentHandle>("create_markdown_file", { directoryPath });
+  if (result) {
+    lastSaveTimestamps[result.path] = Date.now();
+  }
+  return result;
 }
 
 export async function duplicateMarkdownFile(path: string) {
-  return invoke<DocumentHandle>("duplicate_markdown_file", { path });
+  const result = await invoke<DocumentHandle>("duplicate_markdown_file", { path });
+  if (result) {
+    lastSaveTimestamps[result.path] = Date.now();
+  }
+  return result;
 }
 
 export async function deleteMarkdownFile(path: string) {
@@ -57,27 +67,39 @@ export async function deleteMarkdownFile(path: string) {
 }
 
 export async function renameMarkdownFile(path: string, nextName: string) {
-  return invoke<DocumentHandle>("rename_markdown_file", { path, nextName });
+  const result = await invoke<DocumentHandle>("rename_markdown_file", { path, nextName });
+  if (result) {
+    lastSaveTimestamps[result.path] = Date.now();
+  }
+  return result;
 }
 
 export async function saveDocument(path: string | null, content: string) {
-  return invoke<DocumentHandle | null>("save_markdown_file", {
+  const result = await invoke<DocumentHandle | null>("save_markdown_file", {
     request: {
       path,
       content,
       suggestedName: "untitled.md",
     },
   });
+  if (result) {
+    lastSaveTimestamps[result.path] = Date.now();
+  }
+  return result;
 }
 
 export async function saveDocumentAs(content: string, suggestedName: string) {
-  return invoke<DocumentHandle | null>("save_markdown_file_as", {
+  const result = await invoke<DocumentHandle | null>("save_markdown_file_as", {
     request: {
       path: null,
       content,
       suggestedName,
     },
   });
+  if (result) {
+    lastSaveTimestamps[result.path] = Date.now();
+  }
+  return result;
 }
 
 export async function importImageAsset(
@@ -105,4 +127,12 @@ export async function openExternalLinkInBrowser(url: string, browserId: string) 
     url,
     browserId,
   });
+}
+
+export async function watchFile(path: string) {
+  return invoke<void>("watch_file", { path });
+}
+
+export async function unwatchFile(path: string) {
+  return invoke<void>("unwatch_file", { path });
 }
