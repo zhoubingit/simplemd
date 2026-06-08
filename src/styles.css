@@ -136,7 +136,6 @@ body {
   gap: 2px;
   padding: 0 8px;
   transform: translate(-50%, -50%);
-  cursor: grab;
   user-select: none;
 }
 
